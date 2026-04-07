@@ -1081,24 +1081,155 @@ footer {
      JAVASCRIPT — EmailJS + Validation + Animations
      ═══════════════════════════════════════════════════ -->
 <script>
-document.getElementById('quoteForm').addEventListener('submit', function(e) {
+/* ── EmailJS CONFIG ─────────────────────────────────────
+   STEP 1: Go to https://www.emailjs.com  (free account)
+   STEP 2: Add Email Service  → copy Service ID
+   STEP 3: Create Email Template using these variables:
+           {{first_name}}, {{last_name}}, {{company}},
+           {{email}}, {{phone}}, {{project_type}}, {{message}}
+           Set "To Email" → surjp@outridersteelworks.ca
+   STEP 4: Replace the three values below
+   ──────────────────────────────────────────────────── */
+  
+/*  
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // ← replace
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // ← replace
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← replace
+
+const IS_CONFIGURED = !EMAILJS_PUBLIC_KEY.includes('YOUR_');
+*/
+/* init EmailJS only when configured */
+if (IS_CONFIGURED) {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+  document.getElementById('setupNotice').style.display = 'none';
+}
+
+/* ── FORM SUBMIT ─────────────────────────────────────── */
+/* 
+  document.getElementById('quoteForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
   /* honeypot check */
-  if (document.querySelector('[name="hp_name"]').value) {
-    e.preventDefault();
-    return;
-  }
+  if (document.querySelector('[name="hp_name"]').value) return;
 
-  /* validate — if invalid, block submission */
-  if (!validateForm()) {
-    e.preventDefault();
-    return;
-  }
+  /* validate */
+  if (!validateForm()) return;
 
-  /* If valid, let the form submit naturally to Formspree */
-  const btn = document.getElementById('submitBtn');
+  const btn     = document.getElementById('submitBtn');
+  const success = document.getElementById('successMsg');
+  const error   = document.getElementById('errorMsg');
+
+  success.style.display = 'none';
+  error.style.display   = 'none';
   btn.classList.add('loading');
+
+  const params = {
+    first_name:   document.getElementById('firstName').value.trim(),
+    last_name:    document.getElementById('lastName').value.trim(),
+    company:      document.getElementById('company').value.trim() || 'Not provided',
+    email:        document.getElementById('email').value.trim(),
+    phone:        document.getElementById('phone').value.trim() || 'Not provided',
+    project_type: document.getElementById('projectType').value,
+    message:      document.getElementById('message').value.trim(),
+    to_email:     'mfrogh2016@gmail.com',
+    reply_to:     document.getElementById('email').value.trim(),
+  };
+
+  if (!IS_CONFIGURED) {
+    /* Demo mode — simulate success */
+    await new Promise(r => setTimeout(r, 1500));
+    btn.classList.remove('loading');
+    success.style.display = 'block';
+    document.getElementById('quoteForm').reset();
+    return;
+  }
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    btn.classList.remove('loading');
+    success.style.display = 'block';
+    document.getElementById('quoteForm').reset();
+    /* scroll to success message */
+    success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    btn.classList.remove('loading');
+    error.style.display = 'block';
+  }
+});
+  
+*/
+/* ── VALIDATION ──────────────────────────────────────── */
+function validateForm() {
+  let valid = true;
+
+  const rules = [
+    { id: 'firstName',   errId: 'err-firstName',   test: v => v.trim().length >= 2 },
+    { id: 'lastName',    errId: 'err-lastName',     test: v => v.trim().length >= 2 },
+    { id: 'email',       errId: 'err-email',        test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id: 'projectType', errId: 'err-projectType',  test: v => v !== '' },
+    { id: 'message',     errId: 'err-message',      test: v => v.trim().length >= 15 },
+  ];
+
+  rules.forEach(rule => {
+    const el  = document.getElementById(rule.id);
+    const err = document.getElementById(rule.errId);
+    if (!rule.test(el.value)) {
+      el.classList.add('invalid');
+      err.classList.add('show');
+      valid = false;
+    } else {
+      el.classList.remove('invalid');
+      err.classList.remove('show');
+    }
+  });
+
+  return valid;
+}
+
+/* clear errors on input */
+['firstName','lastName','email','projectType','message'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => {
+    el.classList.remove('invalid');
+    const err = document.getElementById('err-' + id);
+    if (err) err.classList.remove('show');
+  });
 });
 
+/* ── MOBILE MENU ─────────────────────────────────────── */
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+}
+
+/* ── SCROLL REVEAL ───────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── NAV SCROLL EFFECT ───────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 60) {
+    nav.style.background = 'rgba(13,13,11,0.98)';
+  } else {
+    nav.style.background = 'rgba(13,13,11,0.95)';
+  }
+});
 
 </script>
 </body>
