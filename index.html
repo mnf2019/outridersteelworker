@@ -1104,9 +1104,10 @@ if (IS_CONFIGURED) {
 }
 
 /* ── FORM SUBMIT ─────────────────────────────────────── */
-document.getElementById('quoteForm').addEventListener('submit', async function(e) {
+/* 
+  document.getElementById('quoteForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-
+  
   /* honeypot check */
   if (document.querySelector('[name="hp_name"]').value) return;
 
@@ -1155,7 +1156,8 @@ document.getElementById('quoteForm').addEventListener('submit', async function(e
     error.style.display = 'block';
   }
 });
-
+  
+*/
 /* ── VALIDATION ──────────────────────────────────────── */
 function validateForm() {
   let valid = true;
