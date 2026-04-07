@@ -1091,13 +1091,13 @@ footer {
    STEP 4: Replace the three values below
    ──────────────────────────────────────────────────── */
   
-/*  
+
 const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // ← replace
 const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // ← replace
 const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← replace
 
 const IS_CONFIGURED = !EMAILJS_PUBLIC_KEY.includes('YOUR_');
-*/
+
 /* init EmailJS only when configured */
 if (IS_CONFIGURED) {
   emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -1105,7 +1105,7 @@ if (IS_CONFIGURED) {
 }
 
 /* ── FORM SUBMIT ─────────────────────────────────────── */
-/* 
+ 
   document.getElementById('quoteForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
@@ -1158,7 +1158,7 @@ if (IS_CONFIGURED) {
   }
 });
   
-*/
+
 /* ── VALIDATION ──────────────────────────────────────── */
 function validateForm() {
   let valid = true;
