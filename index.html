@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Outrider Steelworks Ltd. — Custom Steel Fabrication, Alberta</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<!--
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  -->
 <style>
 /* ── RESET & VARIABLES ─────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -524,11 +521,11 @@ h2 {
   line-height: 1.6;
 }
 .alert.success {
-  display: block; background: rgba(5,150,105,0.12);
+  background: rgba(5,150,105,0.12);
   border-color: #059669; color: #6ee7b7;
 }
 .alert.error {
-  display: block; background: rgba(220,38,38,0.12);
+  background: rgba(220,38,38,0.12);
   border-color: #dc2626; color: #fca5a5;
 }
 
@@ -919,29 +916,35 @@ footer {
       </div>
     </div>
 
-    <!-- RIGHT: Dynamic Form -->
+    <!-- RIGHT: Form -->
     <div class="reveal">
       <div class="form-panel">
         <h3>Request a Quote</h3>
         <p class="form-sub">Fill in your project details and we'll respond promptly. Emails go directly to Surj Purewal.</p>
 
-        <form action="https://formspree.io/f/mpqobdvb"
-  method="POST" id="quoteForm" >
+        <!-- ✅ FIX: form posts directly to Formspree. No JS interception. -->
+        <form
+          action="https://formspree.io/f/mpqobdvb"
+          method="POST"
+          id="quoteForm"
+        >
+          <!-- Formspree redirect back to same page after submit -->
+          <input type="hidden" name="_next" value="?sent=1">
 
-          <!-- honeypot anti-spam -->
+          <!-- honeypot anti-spam (Formspree honours _gotcha field) -->
           <div class="hp-field">
-            <input type="text" name="hp_name" tabindex="-1" autocomplete="off">
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
           </div>
 
           <div class="form-row">
             <div class="field">
               <label>First Name <span class="req">*</span></label>
-              <input type="text" id="firstName" name="first_name" placeholder="John" autocomplete="given-name">
+              <input type="text" id="firstName" name="first_name" placeholder="John" autocomplete="given-name" required>
               <span class="field-error" id="err-firstName">Please enter your first name.</span>
             </div>
             <div class="field">
               <label>Last Name <span class="req">*</span></label>
-              <input type="text" id="lastName" name="last_name" placeholder="Smith" autocomplete="family-name">
+              <input type="text" id="lastName" name="last_name" placeholder="Smith" autocomplete="family-name" required>
               <span class="field-error" id="err-lastName">Please enter your last name.</span>
             </div>
           </div>
@@ -953,7 +956,7 @@ footer {
 
           <div class="field">
             <label>Email Address <span class="req">*</span></label>
-            <input type="email" id="email" name="email" placeholder="your@email.com" autocomplete="email">
+            <input type="email" id="email" name="email" placeholder="your@email.com" autocomplete="email" required>
             <span class="field-error" id="err-email">Please enter a valid email address.</span>
           </div>
 
@@ -964,7 +967,7 @@ footer {
 
           <div class="field">
             <label>Project Type <span class="req">*</span></label>
-            <select id="projectType" name="project_type">
+            <select id="projectType" name="project_type" required>
               <option value="">— Select a category —</option>
               <option value="Bridge Components">Bridge Components</option>
               <option value="Expansion Joints">Expansion Joints</option>
@@ -978,7 +981,7 @@ footer {
 
           <div class="field">
             <label>Project Details <span class="req">*</span></label>
-            <textarea id="message" name="message" placeholder="Describe your requirements, quantities, dimensions, specifications, timeline, and any other relevant details..."></textarea>
+            <textarea id="message" name="message" placeholder="Describe your requirements, quantities, dimensions, specifications, timeline, and any other relevant details..." required></textarea>
             <span class="field-error" id="err-message">Please describe your project.</span>
           </div>
 
@@ -988,27 +991,15 @@ footer {
             <span class="spinner"></span>
           </button>
 
-          <div class="alert success" id="successMsg">
+          <!-- Success message shown via JS when ?sent=1 in URL -->
+          <div class="alert success" id="successMsg" style="display:none">
             ✔ &nbsp; Your message has been sent to Surj Purewal at Outrider Steelworks. We'll be in touch shortly — usually within one business day.
           </div>
-          <div class="alert error" id="errorMsg">
+          <div class="alert error" id="errorMsg" style="display:none">
             ✘ &nbsp; Something went wrong. Please try again, or email Surj directly at <a href="mailto:surjp@outridersteelworks.ca" style="color:inherit;text-decoration:underline">surjp@outridersteelworks.ca</a>
           </div>
 
         </form>
-
-        <!-- Setup instructions (shown when EmailJS not yet configured) 
-        <div id="setupNotice" style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(201,125,10,0.1);border-left:3px solid var(--amber);font-size:0.8rem;color:rgba(242,237,228,0.7);line-height:1.75">
-          <strong style="color:var(--amber);font-family:var(--hd);letter-spacing:0.05em;font-size:0.85rem">⚙ SETUP REQUIRED</strong><br>
-          To activate real email delivery to <strong>surjp@outridersteelworks.ca</strong>, replace the three placeholders in the &lt;script&gt; section at the bottom of this file:<br><br>
-          1. <strong>YOUR_PUBLIC_KEY</strong> — from emailjs.com → Account → API Keys<br>
-          2. <strong>YOUR_SERVICE_ID</strong> — from EmailJS → Email Services<br>
-          3. <strong>YOUR_TEMPLATE_ID</strong> — from EmailJS → Email Templates<br><br>
-          EmailJS is <strong>free</strong> (200 emails/month). Sign up at <strong>emailjs.com</strong>
-        </div>
-        -->
-
-        
       </div>
     </div>
 
@@ -1018,10 +1009,7 @@ footer {
 <!-- ── MAP ────────────────────────────────────────────── -->
 <div class="map-section reveal">
   <div class="map-frame">
-   
-    <iframe src="https://www.google.com/maps/embed?pb=!4v1775529310028!6m8!1m7!1sVTQDGzsQ2XRvtj9G80PEHw!2m2!1d53.55086770665001!2d-113.9940283641647!3f268.72705!4f0!5f1.9587109090973311" title="Outrider Steelworks Location"  width="100%" height="400%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-    
-    </iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!4v1775529310028!6m8!1m7!1sVTQDGzsQ2XRvtj9G80PEHw!2m2!1d53.55086770665001!2d-113.9940283641647!3f268.72705!4f0!5f1.9587109090973311" title="Outrider Steelworks Location" width="100%" height="400%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   <p style="font-size:0.72rem;color:var(--muted);margin-top:0.5rem;text-align:right">
     Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:var(--muted)">OpenStreetMap contributors</a>
@@ -1076,89 +1064,39 @@ footer {
   </div>
 </footer>
 
-
 <!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT — EmailJS + Validation + Animations
+     JAVASCRIPT — Validation + Animations only
+     EmailJS removed. Form submits natively to Formspree.
      ═══════════════════════════════════════════════════ -->
 <script>
-/* ── EmailJS CONFIG ─────────────────────────────────────
-   STEP 1: Go to https://www.emailjs.com  (free account)
-   STEP 2: Add Email Service  → copy Service ID
-   STEP 3: Create Email Template using these variables:
-           {{first_name}}, {{last_name}}, {{company}},
-           {{email}}, {{phone}}, {{project_type}}, {{message}}
-           Set "To Email" → surjp@outridersteelworks.ca
-   STEP 4: Replace the three values below
-   ──────────────────────────────────────────────────── */
-  
 
-
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // ← replace
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // ← replace
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← replace
-
-const IS_CONFIGURED = !EMAILJS_PUBLIC_KEY.includes('YOUR_');
-
-/* init EmailJS only when configured */
-if (IS_CONFIGURED) {
-  emailjs.init(EMAILJS_PUBLIC_KEY);
-  document.getElementById('setupNotice').style.display = 'none';
+/* ── SHOW SUCCESS IF REDIRECTED BACK FROM FORMSPREE ── */
+/* After Formspree processes the form it redirects to ?sent=1  */
+if (new URLSearchParams(window.location.search).get('sent') === '1') {
+  document.getElementById('successMsg').style.display = 'block';
+  /* smooth scroll to the form so user sees the message */
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ── FORM SUBMIT ─────────────────────────────────────── */
- 
-  document.getElementById('quoteForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
+/* ── FORM SUBMIT — validate only, then let browser POST to Formspree ── */
+document.getElementById('quoteForm').addEventListener('submit', function(e) {
+
   /* honeypot check */
-  if (document.querySelector('[name="hp_name"]').value) return;
-
-  /* validate */
-  if (!validateForm()) return;
-
-  const btn     = document.getElementById('submitBtn');
-  const success = document.getElementById('successMsg');
-  const error   = document.getElementById('errorMsg');
-
-  success.style.display = 'none';
-  error.style.display   = 'none';
-  btn.classList.add('loading');
-
-  const params = {
-    first_name:   document.getElementById('firstName').value.trim(),
-    last_name:    document.getElementById('lastName').value.trim(),
-    company:      document.getElementById('company').value.trim() || 'Not provided',
-    email:        document.getElementById('email').value.trim(),
-    phone:        document.getElementById('phone').value.trim() || 'Not provided',
-    project_type: document.getElementById('projectType').value,
-    message:      document.getElementById('message').value.trim(),
-    to_email:     'mfrogh2016@gmail.com',
-    reply_to:     document.getElementById('email').value.trim(),
-  };
-
-  if (!IS_CONFIGURED) {
-    /* Demo mode — simulate success */
-    await new Promise(r => setTimeout(r, 1500));
-    btn.classList.remove('loading');
-    success.style.display = 'block';
-    document.getElementById('quoteForm').reset();
+  if (document.querySelector('[name="_gotcha"]').value) {
+    e.preventDefault();
     return;
   }
 
-  try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
-    btn.classList.remove('loading');
-    success.style.display = 'block';
-    document.getElementById('quoteForm').reset();
-    /* scroll to success message */
-    success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  } catch (err) {
-    console.error('EmailJS error:', err);
-    btn.classList.remove('loading');
-    error.style.display = 'block';
+  /* client-side validation — block submit only if invalid */
+  if (!validateForm()) {
+    e.preventDefault();
+    return;
   }
+
+  /* ✅ valid — do NOT call e.preventDefault() here.
+     The browser will POST the form data to Formspree naturally. */
+  document.getElementById('submitBtn').classList.add('loading');
 });
-  
 
 /* ── VALIDATION ──────────────────────────────────────── */
 function validateForm() {
